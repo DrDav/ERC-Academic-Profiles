@@ -1,4 +1,4 @@
-starting_year,scopus_profiles,orcid_profiles
+starting_year,scopus_profiles,orcid_profiles,total
 2014,11,9,11
 2015,734,614,837
 2016,830,728,930
@@ -6,3 +6,4 @@ starting_year,scopus_profiles,orcid_profiles
 2018,917,830,1027
 2019,259,256,290
 2020,2,2,2
+2021,0,0,0

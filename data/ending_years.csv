@@ -1,4 +1,4 @@
-ending_year,scopus_profiles,orcid_profiles,total_people_per_year
+ending_year,scopus_profiles,orcid_profiles,total
 2015,2,1,2
 2016,98,86,103
 2017,62,61,74
@@ -10,3 +10,4 @@ ending_year,scopus_profiles,orcid_profiles,total_people_per_year
 2023,759,666,850
 2024,130,118,143
 2025,2,2,2
+2026,0,0,0
