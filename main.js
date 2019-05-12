@@ -392,6 +392,7 @@ d3.select("select[name=website]")
                     break;
                 case "nation":
                     graph_draw.by_nation();
+                    break;
                 default:
                     graph_draw.by_year();
                     break;
