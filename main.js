@@ -4,10 +4,10 @@ var graph_params = {
     group: "starting",
     website: "scopus",
     showTotal: true,
-    width: 900,
+    width: 870,
     height: 680,
-    margin: { top: 50, right: 30, bottom: 30, left: 40 },
-    innerWidth: 900 - 40 - 30,
+    margin: { top: 50, right: 30, bottom: 30, left: 50 },
+    innerWidth: 870 - 50 - 30,
     innerHeight: 600 - 50 - 30,
     spaceBetween: 10, /* Spacing between two bars */
     emptySpace: 0.3 /* Percentage of the width of a bar */
@@ -430,7 +430,7 @@ d3.select("select[name=grouping]")
 
 d3.select("input[name=total]")
     .on("click", function() {
-        params.showTotal = !params.showTotal;
+        graph_params.showTotal = !graph_params.showTotal;
         graph_draw.fadeOut(); // Fade out the old graph
         sleep(500).then(function() {
             d3.select("svg").remove();
@@ -447,3 +447,12 @@ d3.select("input[name=total]")
             }
         });
     })
+
+/* Append a table with a brief summary */
+d3.csv("data/general.csv").then(function(data) {
+    var d = data[0];
+    d3.select("#total_people").text(d.total_people);
+    d3.select("#scopus_total").text(d.scopus_profiles);
+    d3.select("#orcid_total").text(d.orcid_profiles);
+    d3.select("#scopus_with_orcid").text(d.scopus_with_orcid);
+});

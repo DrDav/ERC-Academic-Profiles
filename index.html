@@ -60,11 +60,30 @@
     .selector {
         padding-left: 25px;
         padding-right: 25px;
-        border: 5px solid red;
+        /*border: 5px solid red;*/
     }
     .tick {
         font-size: 12pt;
     }
+
+    .tableKey {
+        font-weight: bold;
+        padding-right: 20px;
+    }
+
+    .tableValue {
+        font-style: italic;
+    }
+
+    tr {
+        border: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+
+    td {
+        padding: 5px;
+    }
+
     </style>
 </head>
 
@@ -72,10 +91,11 @@
     <header>Grafici Scopus</header>
     <div class="container">
         <div class="selector">
-            <select name="website">
+            Show <select name="website">
                 <option value="scopus">Scopus</option>
                 <option value="orcid">Orcid</option>
             </select>
+            profiles
             <select name="grouping">
                 <option value="starting">by Starting Year</option>
                 <option value="ending">by Ending Year</option>
@@ -83,9 +103,32 @@
                 <option value="nation">by Nation</option>
             </select>
             <br>
-            <!-- <input type="checkbox" name="percentage" id="percentage"><label for="percentage">Show Percentages</label>
-            <br> -->
+            <!-- <input type="checkbox" name="percentage" id="percentage"><label for="percentage">Show Percentages</label> -->
+            <br>
             <input type="checkbox" name="total" id="total" checked><label for="total">Show Total Count</label>
+            <br>
+            <br>
+            <table>
+                <thead></thead>
+                <tbody>
+                    <tr>
+                        <td class="tableKey">Total People Analyzed</td>
+                        <td class="tableValue" id="total_people"></td>
+                    </tr>
+                    <tr>
+                        <td class="tableKey">Scopus Profiles Found</td>
+                        <td class="tableValue" id="scopus_total"></td>
+                    </tr>
+                    <tr>
+                        <td class="tableKey">Orcid Profiles Found</td>
+                        <td class="tableValue" id="orcid_total"></td>
+                    </tr>
+                    <tr>
+                        <td class="tableKey">Orcid Profiles attached to Scopus</td>
+                        <td class="tableValue" id="scopus_with_orcid"></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
     
