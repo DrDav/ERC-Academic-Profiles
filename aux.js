@@ -136,6 +136,81 @@ function appendAxesLabels(x, y) {
     .text(y);  
 }
 
-function createLegend(svg) {
-    var g = svg.append(g)
+function buildLegendForSubjects(svg, colors) {
+    // 27 subj areas => 3 gruppi
+    var keys = colors.domain()
+    var firstGroup = keys.slice(0, 9);
+    var secondGroup = keys.slice(9, 18);
+    var thirdGroup = keys.slice(18, 27);
+    var distance = 25;
+
+    /* First Group */
+    var g1 = svg.append("g").attr("transform", "translate(0, 14)").selectAll("g.legend")
+    .data(firstGroup).enter().append("g")
+
+    g1.append("rect")
+    .attr("x", graph_params.innerWidth - graph_params.margin.left - 190)
+    .attr("y", (d, i) => distance * i )
+    .attr("width", 13)
+    .attr("height", 13)
+    .attr("fill", (d) => colors(d))
+
+    g1.append("text")
+    .attr("x", graph_params.innerWidth - graph_params.margin.left - 170)
+    .attr("y", (d, i) => distance * i + 11)
+    .text((d) => d)
+
+    /* Second Group */
+    var g2 = svg.append("g").attr("transform", "translate(0, 14)").selectAll("g.legend")
+    .data(secondGroup).enter().append("g")
+
+    g2.append("rect")
+    .attr("x", graph_params.innerWidth - graph_params.margin.left - 110)
+    .attr("y", (d, i) => distance * i )
+    .attr("width", 13)
+    .attr("height", 13)
+    .attr("fill", (d) => colors(d))
+
+    g2.append("text")
+    .attr("x", graph_params.innerWidth - graph_params.margin.left - 90)
+    .attr("y", (d, i) => distance * i + 11)
+    .text((d) => d)
+
+    /* Third Group */
+    var g3 = svg.append("g").attr("transform", "translate(0, 14)").selectAll("g.legend")
+    .data(thirdGroup).enter().append("g")
+
+    g3.append("rect")
+    .attr("x", graph_params.innerWidth - graph_params.margin.left - 30)
+    .attr("y", (d, i) => distance * i )
+    .attr("width", 13)
+    .attr("height", 13)
+    .attr("fill", (d) => colors(d))
+
+    g3.append("text")
+    .attr("x", graph_params.innerWidth - graph_params.margin.left - 10)
+    .attr("y", (d, i) => distance * i + 11)
+    .text((d) => d)
+}
+
+function updateExplanation() {
+    var textYear = "<p>The graph shows how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p><p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's.</p><p>The columns are subsequently divided by type of project, namely Starting Grants, Consolidator Grants, Advanced Grants or Proofs of Concept.</p>";
+    var textGrant = "<p>The graph shows how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the type of grant they have received from the EU.</p><p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's.</p><p>The columns are subsequently divided by the year in which their project started.</p>";
+    var textNation = "<p>In this view the profiles found are shown in percentage (i.e. the coverage of the profiles with respect to the total winners in a nation).</p><p>The bars have a gradient that visually tells the statistical relevance of the obtained data. The more faded a bar, the lesser the relevance.</p><p>For example, consider a Nation such as the United Kingdom: it has a large number of grants, and a Scopus coverage of about 86%. This is much more reliable than a coverage of 100% found in a nation with 1 grant only, such as Lithuania, where little can be said about its researchers.</p><p>For this reason, the bars associated with Lithuania are more faded than the ones of UK.</p>";
+    var textSubject = "";
+    var div = d3.select(".explanation")
+    switch(graph_params.group) {
+        case "grant":
+            div.html(textGrant)
+            break;
+        case "nation":
+            div.html(textNation)
+            break;
+        case "subjects":
+            div.html(textSubject)
+            break;
+        default:
+            div.html(textYear)
+            break;
+    }
 }

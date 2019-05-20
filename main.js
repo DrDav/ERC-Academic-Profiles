@@ -16,7 +16,7 @@ graph_draw.init = function() {
     // append the svg object to the body of the page
     // append a 'group' element to 'svg'
     // move the 'group' element to the top left margin
-    var svg = d3.select(".container").append("svg")
+    var svg = d3.select(".graph").append("svg")
         .attr("width", graph_params.width) //+ graph_params.margin.left + graph_params.margin.right)
         .attr("height", graph_params.height)// + graph_params.margin.top + graph_params.margin.bottom)
     .append("g")
@@ -86,7 +86,7 @@ graph_draw.byYear = function() {
                         .style("left", d3.event.pageX - 50 + "px")
                         .style("top", d3.event.pageY - 70 + "px")
                         .style("display", "inline-block")
-                        .html("Total people starting this year<br><strong>" + d["total"] + "</strong>");
+                        .html("Total winners starting this year<br><strong>" + d["total"] + "</strong>");
                 })
                 .on("mouseout", () => { d3.select(".tooltip").style("display", "none") })
         })
@@ -274,7 +274,7 @@ graph_draw.byGrant = function() {
                         .style("left", d3.event.pageX - 50 + "px")
                         .style("top", d3.event.pageY - 70 + "px")
                         .style("display", "inline-block")
-                        .html("Total people in this group<br><strong>" + d.total + "</strong>");
+                        .html("Total winners in this group<br><strong>" + d.total + "</strong>");
                 })
                 .on("mouseout", () => { d3.select(".tooltip").style("display", "none") })
         })
@@ -456,7 +456,7 @@ graph_draw.byNation = function() {
                         .style("left", d3.event.pageX - 50 + "px")
                         .style("top", d3.event.pageY - 70 + "px")
                         .style("display", "inline-block")
-                        .html("Total people in "+d[xName]+"<br><strong>" + d.total + "</strong>");
+                        .html("Total winners in "+d[xName]+"<br><strong>" + d.total + "</strong>");
                 })
                 .on("mouseout", () => { d3.select(".tooltip").style("display", "none") })
                 .transition().duration(1000)
@@ -693,17 +693,22 @@ graph_draw.subjects = function(grouped = true) {
 
             })
         
-        var legend = svg.append("g")
-            .attr("class", "legendOrdinal")
-            .attr("transform", "translate("+(graph_params.innerWidth - graph_params.margin.left)+",20)");
+        if(!grouped)
+            /* Richiede una legend fatta a mano perché sennò è troppo lunga */
+            buildLegendForSubjects(svg, colorScale);
+        else { 
+            var legend = svg.append("g")
+                .attr("class", "legendOrdinal")
+                .attr("transform", "translate("+(graph_params.innerWidth - graph_params.margin.left)+",20)");
 
-        var legendOrdinal = d3.legendColor()
-            .shape("path", d3.symbol().type(d3.symbolSquare).size(150)())
-            .shapePadding(10)
-            //use cellFilter to hide the "e" cell
-            .scale(colorScale);
+            var legendOrdinal = d3.legendColor()
+                .shape("path", d3.symbol().type(d3.symbolSquare).size(150)())
+                .shapePadding(10)
+                //use cellFilter to hide the "e" cell
+                .scale(colorScale);
 
-        legend.call(legendOrdinal);
+            legend.call(legendOrdinal);
+        }
 
         // add the x Axis
         var xAxis = d3.axisBottom(x)//.tickValues(range(parseInt(d3.min(data, function(d) { return d[xName]} )), parseInt(d3.max(data, function(d) { return d[xName]} )))).tickFormat(d3.format(".0f"));
@@ -721,6 +726,8 @@ graph_draw.subjects = function(grouped = true) {
         // add the y Axis
         svg.append("g")
              .call(d3.axisLeft(y));
+
+        appendAxesLabels("", "Number of People")
 
     });
 }
@@ -784,10 +791,19 @@ d3.selectAll("input[type=radio]").on('click', function() {
                 graph_draw.byYear();
                 break;
         }
+        updateExplanation();
     });
 })
 
 d3.select("input[name=grouped]").on('click', function() {
-    d3.select("svg").transition().duration(200).style("opacity","0").remove();
-    graph_draw.subjects(d3.event.target.checked);
+    if(graph_params.group != "subjects") {
+        d3.event.preventDefault();
+        return false;
+    }
+    d3.select("svg").transition().duration(200).style("opacity","0")
+    var checked = d3.event.target.checked;
+    sleep(250).then(function() {
+        d3.select("svg").remove();
+        graph_draw.subjects(checked);
+    });
 })

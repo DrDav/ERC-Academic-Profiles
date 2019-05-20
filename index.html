@@ -3,11 +3,22 @@
     <title>Statistiche</title>
     <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
     <style type="text/css">
-    html, body {
+    html {
         margin: 0;
         font-family: HelveticaNeue, Helvetica, Arial, Verdana, sans-serif;
         font-size: 10pt;
+    }
+    h1{
+        text-align: center;
+    }
+    h5 {
+        text-align: center;
+        font-weight: normal;
+        font-style: italic;
+        margin-top: -10px;
+        margin-bottom: 5px;
     }
     svg {
         /*border: 5px solid black;*/
@@ -61,29 +72,29 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-        align-items: center;
+        /*align-items: center;*/
     }
     .selector {
         padding-left: 25px;
         padding-right: 0;
-        margin-top: 50px;
+        margin-top: 0;
         /*border: 5px solid red;*/
     }
     svg {
         margin-left: 60px;
-        align-self: center;
     }
     .tick {
         font-size: 12pt;
     }
 
     .tableKey {
-        font-weight: bold;
+        /*font-weight: bold;*/
+        font-style: italic;
         padding-right: 20px;
     }
 
     .tableValue {
-        font-style: italic;
+        /*font-style: italic;*/
     }
 
     tr {
@@ -116,20 +127,48 @@
     #subjectsGrouped + label {
         opacity: 0;
     }
+    .explanation {
+        max-width: 250px;
+        max-height: 200px;
+        overflow-y: scroll;
+    }
+    .explanation::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 7px;
+    }
+    .explanation::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: rgba(0, 0, 0, .5);
+        -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+    }
+    .link {
+        color: black;
+    }
+    .link:visited {
+        color: black;
+    }
+    .link:hover {
+        color: black;
+        cursor: pointer;
+    }
     </style>
 </head>
 
 <body>
+    <header>
+        <h1>ERC Academic Profiles Statistics <a href="http://github.com/drdav/ERC-Academic-Profiles" class="link" alt="View on GitHub" title="View on GitHub"><i class="fab fa-github"></i></a></h1>
+        <h5>A tool that aims to show how academic profiles on the internet are sometimes harder than expected to find.</h5>
+    </header>
     <div class="container">
         <div class="selector">
-            Group Data:<br>
-            <input type="radio" name="grouping" id="starting" class="radioButton" value="starting_year" checked> <label for="starting">by Starting Year</label>
+            <h2>Group Data By</h2>
+            <input type="radio" name="grouping" id="starting" class="radioButton" value="starting_year" checked> <label for="starting">Starting Year</label>
             <br>
-            <input type="radio" name="grouping" id="grant" class="radioButton" value="grant"> <label for="grant">by Type of Grant</label>
+            <input type="radio" name="grouping" id="grant" class="radioButton" value="grant"> <label for="grant">Type of Grant</label>
             <br>
-            <input type="radio" name="grouping" id="nation" class="radioButton" value="nation"> <label for="nation">by Nation</label>
+            <input type="radio" name="grouping" id="nation" class="radioButton" value="nation"> <label for="nation">Nation</label>
             <br>
-            <input type="radio" name="grouping" id="subjects" class="radioButton" value="subjects"> <label for="subjects">by Subjects Area (Scopus Only)</label>
+            <input type="radio" name="grouping" id="subjects" class="radioButton" value="subjects"> <label for="subjects">Subject Area (Scopus Only)</label>
             <br>
             <input type="checkbox" name="grouped" id="subjectsGrouped" value="yes" checked> <label for="subjectsGrouped">Group Subjects by Macroareas</label>
             <!-- Show <select name="website">
@@ -143,7 +182,7 @@
                 <option value="grant">by Type of Grant</option>
                 <option value="nation">by Nation</option>
             </select> -->
-            <br>
+            <h2>General Information</h2>
             <!-- <input type="checkbox" name="percentage" id="percentage"><label for="percentage">Show Percentages</label> -->
             <!-- <br>
             <input type="checkbox" name="total" id="total" checked><label for="total">Show Total Count</label> -->
@@ -168,6 +207,15 @@
                     </tr>
                 </tbody>
             </table>
+            Hover on the graph bars to view additional details.
+            <h2>Explanation</h2>
+            <div class="explanation">
+                <p>The graph shows how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p>
+                <p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's.</p>
+                <p>The columns are subsequently divided by type of project, namely Starting Grants, Consolidator Grants, Advanced Grants or Proofs of Concept.</p>
+            </div>
+        </div>
+        <div class="graph">
         </div>
     </div>
     <script src="aux.js" charset="utf-8"></script>
