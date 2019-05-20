@@ -6,7 +6,7 @@ This tool aims to visualize how many people involved in the European Research Co
 You can use the tool by following [this link](http://drdav.github.io/ERC-Academic-Profiles).
 
 ## Dataset
-The dataset containing all the information about the ERC winners between 2014 and 2020 was retrieved from the [EU Open Data Portal](https://data.europa.eu/euodp/en/data/dataset/cordisH2020projects). The data was then used to query the public APIs of the aforementioned sites ([Scopus](https://dev.elsevier.com/api_docs.html), [Orcid](https://pub.orcid.org/v2.0/))to see if there exists a profile for each winner. For the profiles found on Scopus, additional data such as the person's areas of publication has been downloaded and analyzed.
+The dataset containing all the information about the ERC winners between 2014 and 2020 was retrieved from the [EU Open Data Portal](https://data.europa.eu/euodp/en/data/dataset/cordisH2020projects). The data was then used to query the public APIs of the aforementioned sites ([Scopus](https://dev.elsevier.com/api_docs.html), [Orcid](https://pub.orcid.org/v2.0/) to see if there exists a profile for each winner. For the profiles found on Scopus, additional data such as the person's areas of publication has been downloaded and analyzed.
 
 ## Usage
 The tool starts by showing a graph that groups people by the year in which their ERC project started. You can then choose any other grouping available, such as by grant type or by nation, or view the distribution of the subject areas for each nation.
