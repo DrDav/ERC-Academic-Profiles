@@ -2,26 +2,29 @@
 <head>
     <title>Statistiche</title>
     <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js" charset="utf-8"></script>
     <style type="text/css">
     html, body {
         margin: 0;
-        /*overflow: hidden; */
         font-family: HelveticaNeue, Helvetica, Arial, Verdana, sans-serif;
         font-size: 10pt;
-        /*font-weight: 600;*/
     }
     svg {
         /*border: 5px solid black;*/
         margin-left: 50px;
     }
+    rect:hover {
+        filter: drop-shadow(30px 10px 4px #4444dd);
+        box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+    }
     rect.scopus {
         fill: orangered;
     }
     rect.orcid {
-        fill: forestgreen;
+        /*fill: forestgreen;*/
     }
     
-    rect.bar_total {
+    rect.total {
         fill: #ccc;
         opacity: 0.7;
     }
@@ -43,8 +46,10 @@
         display: none;
         min-width: 100px;
         height: auto;
-        background: none repeat scroll 0 0 #FFF;
-        border: 1px solid #000;
+        background: rgba(0, 0, 0, 0.8);/*none repeat scroll 0 0 #FFF;*/
+        color: #fff;
+        /*border: 1px solid rgba(255, 255, 255, 0.8);*/
+        border-radius: 5px;
         padding: 10px;
         text-align: center;
         font-size: 10pt;
@@ -59,8 +64,13 @@
     }
     .selector {
         padding-left: 25px;
-        padding-right: 25px;
+        padding-right: 0;
+        margin-top: 50px;
         /*border: 5px solid red;*/
+    }
+    svg {
+        margin-left: 60px;
+        align-self: center;
     }
     .tick {
         font-size: 12pt;
@@ -84,14 +94,44 @@
         padding: 5px;
     }
 
+    /* Style the lines by removing the fill and applying a stroke */
+    .line {
+        fill: none;
+        stroke: darkred;
+        stroke-width: 3;
+    }
+
+    .dot {
+        fill: darkred;
+    }
+
+    .focus {
+        fill: black;
+    }
+    #subjectsGrouped {
+        margin-left: 20px;
+        opacity: 0;
+    }
+    #subjectsGrouped + label {
+        opacity: 0;
+    }
     </style>
 </head>
 
 <body>
-    <header>Grafici Scopus</header>
     <div class="container">
         <div class="selector">
-            Show <select name="website">
+            Group Data:<br>
+            <input type="radio" name="grouping" id="starting" class="radioButton" value="starting_year" checked> <label for="starting">by Starting Year</label>
+            <br>
+            <input type="radio" name="grouping" id="grant" class="radioButton" value="grant"> <label for="grant">by Type of Grant</label>
+            <br>
+            <input type="radio" name="grouping" id="nation" class="radioButton" value="nation"> <label for="nation">by Nation</label>
+            <br>
+            <input type="radio" name="grouping" id="subjects" class="radioButton" value="subjects"> <label for="subjects">by Subjects Area (Scopus Only)</label>
+            <br>
+            <input type="checkbox" name="grouped" id="subjectsGrouped" value="yes" checked> <label for="subjectsGrouped">Group Subjects by Macroareas</label>
+            <!-- Show <select name="website">
                 <option value="scopus">Scopus</option>
                 <option value="orcid">Orcid</option>
             </select>
@@ -101,13 +141,11 @@
                 <option value="ending">by Ending Year</option>
                 <option value="grant">by Type of Grant</option>
                 <option value="nation">by Nation</option>
-            </select>
+            </select> -->
             <br>
             <!-- <input type="checkbox" name="percentage" id="percentage"><label for="percentage">Show Percentages</label> -->
-            <br>
-            <input type="checkbox" name="total" id="total" checked><label for="total">Show Total Count</label>
-            <br>
-            <br>
+            <!-- <br>
+            <input type="checkbox" name="total" id="total" checked><label for="total">Show Total Count</label> -->
             <table>
                 <thead></thead>
                 <tbody>
@@ -131,6 +169,6 @@
             </table>
         </div>
     </div>
-    
-    <script src="main.js"></script>
+    <script src="aux.js" charset="utf-8"></script>
+    <script src="main.js" charset="utf-8"></script>
 </body>
