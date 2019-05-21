@@ -805,5 +805,8 @@ d3.select("input[name=grouped]").on('click', function() {
     sleep(250).then(function() {
         d3.select("svg").remove();
         graph_draw.subjects(checked);
+        updateExplanation(checked);
     });
 })
+
+d3.select(".container").style("height", (graph_params.height - 100) + "px");

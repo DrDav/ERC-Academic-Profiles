@@ -193,11 +193,12 @@ function buildLegendForSubjects(svg, colors) {
     .text((d) => d)
 }
 
-function updateExplanation() {
-    var textYear = "<p>The graph shows how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p><p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's.</p><p>The columns are subsequently divided by type of project, namely Starting Grants, Consolidator Grants, Advanced Grants or Proofs of Concept.</p>";
-    var textGrant = "<p>The graph shows how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the type of grant they have received from the EU.</p><p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's.</p><p>The columns are subsequently divided by the year in which their project started.</p>";
+function updateExplanation(subjAreasGrouped = true) {
+    var textYear = "<p>The bars show how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p><p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's. Grey bars show the total number of people that started in a given year.</p><p>The columns are subsequently divided by type of project, namely Starting Grants, Consolidator Grants, Advanced Grants or Proofs of Concept.</p>";
+    var textGrant = "<p>The bars show how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the type of grant they have received from the EU.</p><p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's. Grey bars show the total number of people that have received a grant of a given type.</p><p>The columns are subsequently divided by the year in which their project started.</p>";
     var textNation = "<p>In this view the profiles found are shown in percentage (i.e. the coverage of the profiles with respect to the total winners in a nation).</p><p>The bars have a gradient that visually tells the statistical relevance of the obtained data. The more faded a bar, the lesser the relevance.</p><p>For example, consider a Nation such as the United Kingdom: it has a large number of grants, and a Scopus coverage of about 86%. This is much more reliable than a coverage of 100% found in a nation with 1 grant only, such as Lithuania, where little can be said about its researchers.</p><p>For this reason, the bars associated with Lithuania are more faded than the ones of UK.</p>";
-    var textSubject = "";
+    var textSubject = "<p>This view shows the distribution of the (main) research areas of ERC winners divided by nation.</p><p>These results come from the Scopus website, and the areas are the ones defined by it.</p><p>Hover on the legend of the chart to see the meaning of each area.</p>";
+    var textSubjectGrouped = "<p>This view shows the distribution of the (main) research areas of ERC winners divided by nation.</p><p>The results come from the Scopus website, but the areas are grouped according to the <a href=\"https://erc.europa.eu/projects-figures/erc-funded-projects\" alt=\"ERC Research Domains\" style=\"color: blue;\">ERC-defined Research Domains</a> (or Panels).</p><p>Hover on the chart legend to see the meaning of each group.</p>";
     var div = d3.select(".explanation")
     switch(graph_params.group) {
         case "grant":
@@ -207,7 +208,7 @@ function updateExplanation() {
             div.html(textNation)
             break;
         case "subjects":
-            div.html(textSubject)
+            div.html((subjAreasGrouped) ? textSubjectGrouped : textSubject)
             break;
         default:
             div.html(textYear)
