@@ -86,7 +86,9 @@ graph_draw.byYear = function() {
                         .style("left", d3.event.pageX - 50 + "px")
                         .style("top", d3.event.pageY - 70 + "px")
                         .style("display", "inline-block")
-                        .html("Total winners starting this year<br><strong>" + d["total"] + "</strong>");
+                        .html("Total winners starting this year: <strong>" + d["total"] + "</strong>"
+                        + "<br>Scopus Coverage: <strong>" + Math.round((d["scopus_profiles"] / d["total"] * 100) * 10) / 10 + "%</strong> ("+d["scopus_profiles"]+")"
+                        + "<br>Orcid Coverage: <strong>" + Math.round((d["orcid_profiles"] / d["total"] * 100) * 10) / 10 + "%</strong> ("+d["orcid_profiles"]+")");
                 })
                 .on("mouseout", () => { d3.select(".tooltip").style("display", "none") })
         })
@@ -272,9 +274,11 @@ graph_draw.byGrant = function() {
                 .on("mousemove", () => {
                     d3.select(".tooltip")
                         .style("left", d3.event.pageX - 50 + "px")
-                        .style("top", d3.event.pageY - 70 + "px")
+                        .style("top", d3.event.pageY - 100 + "px")
                         .style("display", "inline-block")
-                        .html("Total winners in this group<br><strong>" + d.total + "</strong>");
+                        .html("Total winners in this group<br><strong>" + d.total + "</strong>"
+                        + "<br>Scopus Coverage: <strong>" + Math.round((d["scopus_profiles"] / d["total"] * 100) * 10) / 10 + "%</strong> ("+d["scopus_profiles"]+")"
+                        + "<br>Orcid Coverage: <strong>" + Math.round((d["orcid_profiles"] / d["total"] * 100) * 10) / 10 + "%</strong> ("+d["orcid_profiles"]+")");
                 })
                 .on("mouseout", () => { d3.select(".tooltip").style("display", "none") })
         })
@@ -556,7 +560,7 @@ graph_draw.byNation = function() {
             /* Move the labels at the center of the bars */
             .selectAll("text")
             //.style("text-anchor", "")
-            .attr("transform", "rotate(-65), translate(-45,5)")
+            .attr("transform", "rotate(-90), translate(-65,-15)")
 
         d3.selectAll('.x .tick text')
             .data(data)
@@ -603,13 +607,13 @@ graph_draw.byNation = function() {
     });    
 }
 
-graph_draw.subjects = function(grouped = true) {
+graph_draw.subjects = function(grouped = true, sortBy = "total") {
     /* Mostra sia Scopus che Orcid */
     var svg = graph_draw.init(); // The graph
     var xName = "nation"//graph_params.group; // Name of the x property
 
     d3.csv("data/subjects.csv").then(data => {
-        data.sort((a, b) => { return (+b.total) - (+a.total) });
+        data.sort((a, b) => { return (+b[sortBy]) - (+a[sortBy]) });
         /* x-scale (band/ordinal) */
         var x = d3.scaleBand()
             .range([0, graph_params.innerWidth])
@@ -625,7 +629,7 @@ graph_draw.subjects = function(grouped = true) {
             .domain(y.domain())
             .range([0, graph_params.innerHeight]) // Inverted!
 
-        var stackLayout = (grouped) ? d3.stack().keys(["SH","PE","LS"]) : d3.stack().keys([
+        var keys = (grouped) ? ["SH","PE","LS"] : [
             'AGRI',
             'ARTS',
             'BIOC',
@@ -652,16 +656,36 @@ graph_draw.subjects = function(grouped = true) {
             'PSYC',
             'SOCI',
             'VETE',
-            'MULT',
-        ]);
-        var colorScale = d3.scaleOrdinal().domain(stackLayout.keys()).range((grouped) ? ["#1329D3", "#006494", "#387780"] : [
+            'MULT'
+        ]
+
+        var colors = {
+            "SH": "#1329D3", "PE": "#006494", "LS": "#387780",
+            "AGRI": "#1329D3", "ARTS": "#006494", "BIOC": "#387780", "BUSI": "#1B98E0", "CENG": "#E8F1F2",
+            "CHEM": "#4A7C59", "COMP": "#68B0AB", "DECI": "#8FC0A9", "DENT": "#C8D5B9", "EART": "#565554",
+            "ECON": "#2E86AB", "ENER": "#F5F749", "ENGI": "#F24236", "ENVI": "#2F52E0", "HEAL": "#BCED09",
+            "IMMU": "#F9CB40", "MATE": "#4C5B5C", "MATH": "#86E7B8", "MEDI": "#FFF07C", "NEUR": "#BC9EC1",
+            "NURS": "#87BBA2", "PHAR": "#DB4C40", "PHYS": "#F0C987", "PSYC": "#3C153B", "SOCI": "#8B1E3F", 
+            "VETE": "#456990", "MULT": "#E4FDE1"
+        }
+        var sortedKeys = (sortBy == "total") ? keys : keys.splice(keys.indexOf(sortBy), 1).concat(keys)
+        var stackLayout = d3.stack().keys(sortedKeys);
+        console.log(sortedKeys);
+        var colorRange = []
+        sortedKeys.forEach(k => {colorRange.push(colors[k])})
+        var colorScale = d3.scaleOrdinal().domain(stackLayout.keys()).range(colorRange)
+            
+            
+            
+            
+            /* (grouped) ? ["#1329D3", "#006494", "#387780"] : [
             "#1329D3", "#006494", "#387780", "#1B98E0", "#E8F1F2", "#4A7C59", "#68B0AB", "#8FC0A9", "#C8D5B9",
             "#565554", "#2E86AB", "#F5F749", "#F24236", "#2F52E0", "#BCED09", "#F9CB40", "#4C5B5C", "#86E7B8",
             "#FFF07C", "#BC9EC1", "#87BBA2", "#DB4C40", "#F0C987", "#3C153B", "#8B1E3F", "#456990", "#E4FDE1"
             /*"#fcd88a", "#cf7c1c", "#93c464", "#75734F", "#5eafc6", "#41a368", "#f00", "#0f0", "#00f",
             "#fcd88a", "#cf7c1c", "#93c464", "#75734F", "#5eafc6", "#41a368", "#f00", "#0f0", "#00f",
-            "#fcd88a", "#cf7c1c", "#93c464", "#75734F", "#5eafc6", "#41a368", "#f00", "#0f0", "#00f"*/
-        ])
+            "#fcd88a", "#cf7c1c", "#93c464", "#75734F", "#5eafc6", "#41a368", "#f00", "#0f0", "#00f"
+        ])*/
 
         var g = svg.selectAll("rect.scopus")
             .data(stackLayout(data))
@@ -720,7 +744,9 @@ graph_draw.subjects = function(grouped = true) {
             /* Move the labels at the center of the bars */
             .selectAll("text")
             //.style("text-anchor", "")
-            .attr("transform", "rotate(-65), translate(-45,5)")
+            .attr("transform", "rotate(-90), translate(-50,-15)")
+
+        d3.selectAll(".x .tick text").style("font-size", "10pt");
 
 
         // add the y Axis
@@ -728,6 +754,17 @@ graph_draw.subjects = function(grouped = true) {
              .call(d3.axisLeft(y));
 
         appendAxesLabels("", "Number of People")
+        appendLegendLabels();
+
+        d3.selectAll(".label").style("cursor", "pointer").on('click', function() {
+            console.log(graph_draw);
+            graph_draw.fadeOut();
+            
+            sleep(1100).then( () => {
+                d3.select("svg").remove();
+                graph_draw.subjects(grouped, d3.select(this).text())
+            });
+        })
 
     });
 }

@@ -14,6 +14,9 @@
     h1{
         text-align: center;
     }
+    h2 {
+        padding: 0 0 0 0;
+    }
     h5 {
         text-align: center;
         font-weight: normal;
@@ -128,10 +131,11 @@
         opacity: 0;
     }
     .explanation {
-        max-width: 290px;
-        max-height: 210px;
+        max-width: 280px;
+        max-height: 220px;
         overflow-y: scroll;
         text-align: justify;
+        padding-right: 10px;
     }
     .explanation::-webkit-scrollbar {
         -webkit-appearance: none;
@@ -151,6 +155,11 @@
     .link:hover {
         color: black;
         cursor: pointer;
+    }
+    footer {
+        margin-top: 120px; 
+        text-align: center;
+        font-size: 9px;
     }
     </style>
 </head>
@@ -209,11 +218,12 @@
                 </tbody>
             </table>
             Hover on the graph bars to view additional details.
-            <h2>Explanation</h2>
+            <h2>About the current Graph</h2>
             <div class="explanation">
-                    <p>The bars show how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p>
-                    <p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's. Grey bars show the total number of people that started in a given year.</p>
-                    <p>The columns are subsequently divided by type of project, namely Starting Grants, Consolidator Grants, Advanced Grants or Proofs of Concept.</p>            
+                <p>The bars show how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p>
+                <p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's. Grey bars show the total number of people that started in a given year.</p>
+                <p>The columns are subsequently divided by type of project, namely Starting Grants, Consolidator Grants, Advanced Grants or Proofs of Concept.</p>
+                <p>We can see that the starting year does not affect in any particular way the coverage of the profiles, i.e., the coverage is almost the same for each site and each year.</p>
             </div>
         </div>
         <div class="graph">
@@ -221,4 +231,5 @@
     </div>
     <script src="aux.js" charset="utf-8"></script>
     <script src="main.js" charset="utf-8"></script>
+    <footer><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />The graphs in this page are licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</footer>
 </body>
