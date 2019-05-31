@@ -27,6 +27,7 @@ function build_title(svg) {
     }
 }
 
+/* Creates and appends the diagonal pattern applied to the orcid bars in the view by year and by grant. */
 function initPatterns(defs) {
     defs.append('pattern')
     .attr('id', 'diagonalHatch')
@@ -59,7 +60,7 @@ function initPatterns(defs) {
     .attr("opacity", 0.3);
 }
 
-/* appends the bars corresponding to the total values of a group */
+/* Appends the bars corresponding to the total values of a group */
 function appendTotalBars(g, x, y, isScaleBand = false, xName = "") {
     g.append("rect")
         .attr("class", "bar total")
@@ -96,11 +97,11 @@ function keyGrantToYear(key) {
     return key.replace("scopus_","").replace("orcid_","");
 }
 
+/* Appends to the svg element a linear gradient for the view by nations */
 function linearGradient(d, max, scopus = true) {
     var gradId = "grad_" + d.nation.toLowerCase().replace(" ","") + ((scopus) ? "_scopus" : "_orcid");
 
     var colors = scopus ? ["rgb(255,69,0)", "rgb(255,140,0)", "rgb(255,180,0)"] : ["rgb(34,139,34)", "rgb(60,179,113)", "rgb(144,238,144)"];
-    console.log(colors);
 
     d3.select("defs")
     .append("linearGradient")
@@ -112,6 +113,9 @@ function linearGradient(d, max, scopus = true) {
     .append("stop").attr("offset", "0%").attr("style","stop-color:" + colors[0] + ";stop-opacity:1")
     
     d3.select("linearGradient#"+gradId)
+    /* The fading of the gradient is achieved by log-normalizing the number of people in a country with respect to the maximum.
+     * This is done by moving the gradient stops accordingly.
+     */
     .append("stop").attr("offset", Math.max(Math.log(d.total)/Math.log(max-100)*100 - 5, 1) + "%").attr("style", "stop-color:" + colors[1] + ";stop-opacity:1")
     
     d3.select("linearGradient#"+gradId).append("stop").attr("offset", "100%").attr("style", "stop-color:" + colors[2] + ";stop-opacity:0.4");
@@ -119,6 +123,7 @@ function linearGradient(d, max, scopus = true) {
     return gradId;
 }
 
+/* Utility function for appending the label of the axes in a graph */
 function appendAxesLabels(x, y) {
     // text label for the x axis
     d3.select("svg > g").append("text")     
@@ -136,13 +141,17 @@ function appendAxesLabels(x, y) {
     .text(y);  
 }
 
+/* Manually build the legend for the view by subjects (ungrouped). */
 function buildLegendForSubjects(svg, colors) {
-    // 27 subj areas => 3 gruppi
+    // 27 subj areas => 3 groups
     var keys = colors.domain()
     var firstGroup = keys.slice(0, 9);
     var secondGroup = keys.slice(9, 18);
     var thirdGroup = keys.slice(18, 27);
-    var distance = 25;
+    var distance = 25; // Distance from one group to the other
+
+    /* Legend title */
+    var gTitle = svg.append("g").attr("transform", "translate("+(graph_params.innerWidth - graph_params.margin.left - 110)+", 5)").append("text").text("Sort by:")
 
     /* First Group */
     var g1 = svg.append("g").attr("transform", "translate(0, 14)").selectAll("g.legend")
@@ -197,6 +206,7 @@ function buildLegendForSubjects(svg, colors) {
     .text((d) => d)
 }
 
+/* Updates the "About the current graph" section based off the current view selected. */
 function updateExplanation(subjAreasGrouped = true) {
     var textYear = "<p>The bars show how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p>\
     <p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's. Grey bars show the total number of people that started in a given year.</p>\
@@ -225,7 +235,9 @@ function updateExplanation(subjAreasGrouped = true) {
     <p>The results come from the Scopus website, but the areas are grouped according to the <a href=\"https://erc.europa.eu/projects-figures/erc-funded-projects\" alt=\"ERC Research Domains\" style=\"color: blue;\">ERC-defined Research Domains</a> (or Panels).</p>\
     <p>Hover on the chart legend to see the meaning of each group.</p>\
     <p>Click on the chart legend to sort the bars by a subject area. By default bars are sorted by total people in each country.";
+
     var div = d3.select(".explanation")
+
     switch(graph_params.group) {
         case "grant":
             div.html(textGrant)
@@ -242,6 +254,7 @@ function updateExplanation(subjAreasGrouped = true) {
     }
 }
 
+/* Associates each acronym to its long name (for subject areas) */
 const subjDescriptions = {
     'SH': "Social Sciences and Humanities",
     'PE': "Physical Sciences and Engineering",
@@ -275,10 +288,10 @@ const subjDescriptions = {
     'MULT': "Multidisciplinary"
 }
 
-function appendLegendLabels() {
+/* Appends a tooltip to the legend for the view by subject areas */
+function appendLegendTooltip() {
     d3.selectAll(".label").on("mousemove", function() {
         var key = d3.event.target.innerHTML;
-        //console.log(d3.event.target);
         d3.select(".tooltip")
             .style("left",  (d3.event.pageX - 70) + "px")
             .style("top", d3.event.pageY - 70 + "px")
