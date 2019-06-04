@@ -11,6 +11,7 @@ var graph_params = {
     emptySpace: 0.3 // Expressed as percentage of the width of a bar 
 }
 
+
 graph_draw = {}; // Object containing the drawing functions.
 
 /* Appends a new svg element to the body, adjusting its width and its height. */
@@ -429,7 +430,7 @@ graph_draw.byNation = function() {
             .data(data)
             .enter()
             .append("g");
-
+        
         /* Scopus */
         g.append("rect")
             .attr("class", "")
@@ -551,7 +552,12 @@ graph_draw.subjects = function(grouped = true, sortBy = "total") {
 
     d3.csv("data/subjects.csv").then(data => {
         /* Sort the data according to either the total or the field the user chose */
-        data.sort((a, b) => { return (+b[sortBy]) - (+a[sortBy]) });
+        data.sort((a, b) => { 
+            if((+b[sortBy]) - (+a[sortBy]) == 0)
+                return (+b["total"]) - (+a["total"])
+            else
+                return (+b[sortBy]) - (+a[sortBy]);
+        });
 
         /* x-scale (bands) */
         var x = d3.scaleBand()
@@ -651,7 +657,7 @@ graph_draw.subjects = function(grouped = true, sortBy = "total") {
             })
         
         if(!grouped) // For the ungrouped areas we need to manually create the legend (to subdivide it into three columns)
-            buildLegendForSubjects(svg, colorScale);
+            buildLegendForSubjects(svg, colorScale, sortBy);
         else { // Otherwise append the classic legend
             var legend = svg.append("g")
                 .attr("class", "legendOrdinal")
@@ -718,9 +724,6 @@ graph_draw.fadeOut = function() {
         .remove();
 }
 
-/* Show the standard view: by Year */
-graph_draw.byYear();
-
 /* Append a table with a brief summary read from the general.csv file */
 d3.csv("data/general.csv").then(function(data) {
     var d = data[0];
@@ -738,11 +741,13 @@ d3.selectAll("input[type=radio]").on('click', function() {
         /* Show the checkbox for grouping the subjects */
         d3.select("input[name=grouped]").transition().duration(300).style("opacity","1")
         d3.select("label[for=subjectsGrouped]").transition().duration(300).style("opacity","1")
+        window.location.hash = "#" + newGroup + "Grouped"
     }
     else {
         /* Hide the checkbox */
         d3.select("input[name=grouped]").transition().duration(300).style("opacity","0")
         d3.select("label[for=subjectsGrouped]").transition().duration(300).style("opacity","0")
+        window.location.hash = "#" + newGroup;
     }
 
     /* Prevents the redrawing of the same graph */
@@ -762,7 +767,6 @@ d3.selectAll("input[type=radio]").on('click', function() {
                 graph_draw.byNation();
                 break;
             case "subjects":
-                console.log(d3.select("input[name=grouped]").property("checked"))
                 graph_draw.subjects(d3.select("input[name=grouped]").property("checked"));
                 break;
             default:
@@ -773,7 +777,7 @@ d3.selectAll("input[type=radio]").on('click', function() {
     });
 })
 
-/* Group or ungroup the subject by macroareas - done via a checkbox */
+/* Group or ungroup the subject by macroareas - done via checkbox */
 d3.select("input[name=grouped]").on('click', function() {
     /* As the checkbox is clickable even if it is not visibile, prevent it from being clicked if
      * the current view is not the right one 
@@ -786,6 +790,12 @@ d3.select("input[name=grouped]").on('click', function() {
     d3.select("svg").transition().duration(200).style("opacity","0") // Fade the old graph
 
     var checked = d3.event.target.checked; // True: grouped, false: ungrouped
+
+    if(!checked) 
+        window.location.hash = "#subjects"
+    else
+        window.location.hash = "#subjectsGrouped"
+
     sleep(250).then(function() { // After it has faded, remove it and draw the new one
         d3.select("svg").remove();
         graph_draw.subjects(checked);
@@ -793,4 +803,44 @@ d3.select("input[name=grouped]").on('click', function() {
     });
 })
 
+/* The first view is based on the current window.location.hash, if present. If not, the view by year is shown. */
+switch(window.location.hash) {
+    case "#subjects":
+        graph_params.group = "subjects";
+        d3.select("input#subjects").property("checked", "true");
+        d3.selectAll("input[name=grouped], input[name=grouped]+label").style("opacity", "1");
+        d3.select("input[name=grouped]").property("checked", false);
+        graph_draw.subjects(false);
+        break;
+    case "#subjectsGrouped":
+        graph_params.group = "subjects";
+        d3.select("input#subjects").property("checked", "true");
+        d3.selectAll("input[name=grouped], input[name=grouped]+label").style("opacity", "1");
+        d3.select("input[name=grouped]").property("checked", true);
+        graph_draw.subjects(true);
+        break;
+    case "#starting_year":
+        graph_params.group = "starting_year";
+        d3.select("input#starting").property("checked", "true");
+        graph_draw.byYear();
+        break;
+    case "#grant":
+        graph_params.group = "grant";
+        d3.select("input#grant").property("checked", "true");
+        graph_draw.byGrant();
+        break;
+    case "#nation":
+        graph_params.group = "nation";
+        d3.select("input#nation").property("checked", "true");
+        graph_draw.byNation();
+        break;
+    default:
+        graph_draw.byYear();
+        break;
+}
+
+updateExplanation(d3.select("input[name=grouped]").property("checked")); // Update the "about" box accordingly
+
 d3.select(".container").style("height", (graph_params.height - 100) + "px");
+
+window.onhashchange = function() { window.scrollTo(0, 0); }

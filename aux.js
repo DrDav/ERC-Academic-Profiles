@@ -116,8 +116,8 @@ function linearGradient(d, max, scopus = true) {
     /* The fading of the gradient is achieved by log-normalizing the number of people in a country with respect to the maximum.
      * This is done by moving the gradient stops accordingly.
      */
-    .append("stop").attr("offset", Math.max(Math.log(d.total)/Math.log(max-100)*100 - 5, 1) + "%").attr("style", "stop-color:" + colors[1] + ";stop-opacity:1")
-    
+    .append("stop").attr("offset", ((Math.log(1+parseInt(d.total)) / Math.log(1+max)) * 100 - 5) + "%").attr("style", "stop-color:" + colors[1] + ";stop-opacity:1")
+
     d3.select("linearGradient#"+gradId).append("stop").attr("offset", "100%").attr("style", "stop-color:" + colors[2] + ";stop-opacity:0.4");
 
     return gradId;
@@ -142,7 +142,7 @@ function appendAxesLabels(x, y) {
 }
 
 /* Manually build the legend for the view by subjects (ungrouped). */
-function buildLegendForSubjects(svg, colors) {
+function buildLegendForSubjects(svg, colors, sortBy = "total") {
     // 27 subj areas => 3 groups
     var keys = colors.domain()
     var firstGroup = keys.slice(0, 9);
@@ -169,6 +169,7 @@ function buildLegendForSubjects(svg, colors) {
     .attr("y", (d, i) => distance * i + 11)
     .attr("class", "label")
     .text((d) => d)
+    .style("font-weight", (d) => (d == sortBy) ? "bold" : "normal")
 
     /* Second Group */
     var g2 = svg.append("g").attr("transform", "translate(0, 14)").selectAll("g.legend")
@@ -208,18 +209,18 @@ function buildLegendForSubjects(svg, colors) {
 
 /* Updates the "About the current graph" section based off the current view selected. */
 function updateExplanation(subjAreasGrouped = true) {
-    var textYear = "<p>The bars show how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p>\
+    var textYear = "<p>The bars show how many ERC-winning people have a (findable) Scopus and/or Orcid profile, grouped by the year in which they have started their EU project.</p>\
     <p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's. Grey bars show the total number of people that started in a given year.</p>\
     <p>The columns are subsequently divided by type of project, namely Starting Grants, Consolidator Grants, Advanced Grants or Proofs of Concept.</p>\
     <p>We can see that the starting year does not affect in any particular way the coverage of the profiles, i.e., the coverage is almost the same for each site and each year.</p>";
 
-    var textGrant = "<p>The bars show how many ERC-winning people have a Scopus and/or Orcid profile, grouped by the type of grant they have received from the EU.</p>\
+    var textGrant = "<p>The bars show how many ERC-winning people have a (findable) Scopus and/or Orcid profile, grouped by the type of grant they have received from the EU.</p>\
     <p>Solid-colored columns represent Scopus profiles, while a diagonal pattern overlay is used for Orcid's. Grey bars show the total number of people that have received a grant of a given type.</p>\
     <p>The columns are subsequently divided by the year in which their project started.</p>\
-    <p>From this point of view we cannot notice much variance between groups in terms of coverage. However we can see that the percentage is a little higher for the Advanced grants, although not much. So the coverage seems to be independent from the type of grant one receives.</p>";
+    <p>From this point of view we cannot notice much variance between groups in terms of coverage. However we can see that the percentage is a little higher for the Advanced grants, although not much. The coverage for Orcid also seems to be decreasing going from Starting to Consolidator to Advanced grants, and it is practically independent from the type of grant received.</p>";
 
     var textNation = "<p>In this view the profiles found are shown in percentage (i.e. the coverage of the profiles with respect to the total winners in a nation).</p>\
-    <p>The bars have a gradient that visually tells the statistical relevance of the obtained data. The more faded a bar, the lesser the relevance.</p>\
+    <p>The bars are sorted by the total number of ERC winners in a country, and have a gradient that visually tells the statistical relevance of the obtained data. The more faded a bar, the lesser the relevance.</p>\
     <p>For example, consider a Nation such as the United Kingdom: it has a large number of grants, and a Scopus coverage of about 86%. This is much more reliable than a coverage of 100% found in a nation with 1 grant only, such as Lithuania, where little can be said about its researchers.</p>\
     <p>For this reason, the bars associated with Lithuania are more faded than the ones of UK.</p>\
     <p>This view clearly shows one of the main issues with academic profile finding: in fact the variance in coverage is very high with respect to nations.\
