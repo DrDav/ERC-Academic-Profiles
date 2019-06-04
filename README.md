@@ -22,7 +22,17 @@ The idea of the algorithm is as follows:
 The reason behind not checking the country for Orcid is that we have seen experimentally that many Orcid profiles are private and/or incomplete and this would have hindered most of the searches. Also for Orcid we check only the first 5 results, as the result set provided by the APIs is really large and full of useless results after ~5 entries (and this would have drastically increased the running time of the script).
 
 ## Results
-Generally speaking, the data show that people tend to have a Scopus profile rather than an Orcid one. There is also some confusion with people with two or more names/surnames, as they sometimes omit them resulting in (programmatically) unfindable profiles, as name matching is a hard task. Also few people have linked their Orcid identifier to their Scopus profile. The coverage seems to be not related to the type of grant received, nor with the starting year of a project, as it has a mean of ~80% in each of the two grouping. Below we present the results more in depth.
+Generally speaking, the data show that people tend to have a Scopus profile rather than an Orcid one. There is also some confusion with people with two or more names/surnames, as they sometimes omit them resulting in (programmatically) unfindable profiles, as name matching is a hard task. Also few people have linked their Orcid identifier to their Scopus profile. The coverage seems to be not related to the type of grant received, nor with the starting year of a project, as it has a mean of ~80% in each of the two grouping. The results are summarized in the table below:
+
+|||
+| - | - |
+| **Total People Analyzed** | 4537  |
+| **Scopus Profiles Founds**  | 4003  |
+| **Orcid Profiles Founds**  | 3339 |
+| **Orcid ID Linked to Scopus**  | 1233 |
+| **Mean Coverage by Year** | 91.7% (Scopus), 79.3%(Orcid)| 
+| **Mean Coverage by Grant** | 88.4% (Scopus), 72.8% (Orcid) |
+| **Mean Coverage by Nation** | 88.1% (Scopus), 72.1%(Orcid) |
 
 * The number of Scopus profiles found is higher than the Orcid ones. This can be either because people deliberately chose not to sign up for an Orcid ID (or not to have it public, or not filling it with their details) or because of the mechanism with which the search through API is performed. In fact, while Scopus provides very few and very accurate results for each person searched, Orcid returns a superset of the actual results which contains people with only a similar name without a surname, vice-versa, or even people with a not-so-similar name. So it is possibile that more people actually have an Orcid ID but it was not possibile to find them via an API search. Also not everyone having a profile on Scopus have linked it with their Orcid one.
 * When viewing the results grouped [by starting year](http://drdav.github.io/ERC-Academic-Profiles/#starting_year) or [by type of grant](http://drdav.github.io/ERC-Academic-Profiles/#grant), little can be said about the behavior of the coverage, since every group tends to have the same coverage percentage (about 85%). This implies that having a findable profile on these two websites is not correlated with the "age" (in terms of years after getting a PhD) of a person, i.e. younger people don't necessarily have a findable profile with respect to older people. We can just note a peak in coverage of Scopus profiles in the group of Advanced Grants of about 90% and at the same time the negative peak in the Orcid one (about 69%). In the latter view the Orcid coverage sees a slight decrease when going from Starting to Consolidator to Advanced grants.
