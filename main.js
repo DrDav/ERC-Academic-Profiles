@@ -844,3 +844,21 @@ updateExplanation(d3.select("input[name=grouped]").property("checked")); // Upda
 d3.select(".container").style("height", (graph_params.height - 100) + "px");
 
 window.onhashchange = function() { window.scrollTo(0, 0); }
+
+/* Scroll to top in case the # in the url moves the page after loading */
+window.scrollTo(0, 0);
+
+d3.select("#github")
+    .on("mousemove", function() {
+        d3.select(".tooltip")
+            .style("left", d3.event.pageX + 20 + "px")
+            .style("top", (d3.event.pageY - 15)+ "px")
+            .style("display", "inline-block")
+            .html("View on GitHub");
+    })
+    .on("mouseout", function() {
+        d3.select(".tooltip").style("display", "none")
+    })
+    .on("click", function() {
+        d3.select(".tooltip").style("display", "none")
+    })
