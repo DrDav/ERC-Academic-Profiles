@@ -11,7 +11,7 @@ The dataset containing the information about the ERC winners between 2014 and 20
 ## Technique used to retrieve the data
 The public API of Scopus and Orcid were queried using various Python scripts, filed under the _python_ directory. 
 Both the scripts for Scopus and Orcid make use of the package [Whoswho](https://github.com/rliebz/whoswho) to match names, while the Scopus one uses also [Pycountry](https://pypi.org/project/pycountry/) to match people's countries too.
-The idea of the algorithm is as follows:
+The strategy used is as follows:
 1. Query the public API of Scopus/Orcid to look for an author ([Scopus API](https://api.elsevier.com/content/search/author), [Orcid API](https://pub.orcid.org/v2.0/search))
 2. Loop through the results (sorted by document count) until whoswho finds a match between the name in the dataset and the name obtained from the APIs.
     * For Orcid another query has to be made to retrieve the name of each person as the first search only returns a list of Orcid IDs.
